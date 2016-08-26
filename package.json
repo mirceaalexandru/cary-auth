@@ -1,0 +1,16 @@
+{
+  "name": "@crontor/crontor-auth",
+  "version": "0.0.1",
+  "description": "Crontor auth plugin for Hapi",
+  "main": "lib/plugin.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mircea Alexandru",
+  "dependencies": {
+    "chairo": "^2.2.1",
+    "hapi": "^13.4.1",
+    "joi": "^8.4.2"
+  }
+}
