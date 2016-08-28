@@ -6,7 +6,7 @@ const Hapi = require('hapi')
 const Chairo = require('chairo')
 
 // out plugins
-const CrontorAuth = require('./lib/plugin')
+const CrontorAuth = require('././plugin')
 
 function endIfErr (err) {
 	if (err) {
