@@ -9,8 +9,8 @@
   },
   "author": "Mircea Alexandru",
   "dependencies": {
-    "chairo": "^2.2.1",
-    "hapi": "^13.4.1",
-    "joi": "^8.4.2"
+    "boom": "^4.0.0",
+    "joi": "^8.4.2",
+    "seneca-user": "^2.1.0"
   }
 }

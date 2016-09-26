@@ -2,6 +2,7 @@
 
 const Joi = require('joi')
 const Service = require('./../lib/service')
+const Boom = require('boom')
 
 exports.register = function (server, options, next) {
   // logout
@@ -88,11 +89,11 @@ exports.register = function (server, options, next) {
             firstName: Joi.string().min(3).max(30).required(),
             lastName: Joi.string().min(3).max(30).required(),
             email: Joi.string().email().required(),
-            nick: Joi.string().min(3).max(30).required(),
-            password: Joi.string().min(6).max(30).required()
+            nick: Joi.string().min(3).max(30).required()
           }),
-          500: Joi.object().keys({
-            error_code: Joi.string().max(10).required(),
+          409: Joi.object().keys({
+            statusCode: Joi.number().required(),
+            error: Joi.string().required(),
             message: Joi.string().required()
           }),
         },
@@ -103,6 +104,9 @@ exports.register = function (server, options, next) {
     },
     handler: function (request, reply) {
       request.seneca.act('role: auth, cmd: register', request.payload, function (err, data) {
+        if (err) {
+          return reply(Boom.conflict(err.code))
+        }
         reply(data);
       })
     }
