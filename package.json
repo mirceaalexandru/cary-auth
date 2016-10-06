@@ -1,7 +1,7 @@
 {
-  "name": "@crontor/crontor-auth",
+  "name": "server-auth",
   "version": "0.0.1",
-  "description": "Crontor auth plugin for Hapi",
+  "description": "Server auth plugin for Hapi",
   "main": "lib/plugin.js",
   "scripts": {
     "start": "node index.js",

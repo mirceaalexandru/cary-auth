@@ -1,30 +1,22 @@
-'use strict'
+'use strict';
 
-// Our hapi server bits
-const Hapi = require('hapi')
+exports.register = function (server, options, next) {
+	server.register([
+		{
+			register: require('./api/users')
+		},
+		//{
+		//	register: require('./api/login')
+		//},
+		//{
+		//	register: require('./api/logout')
+		//},
+		//{
+		//	register: require('./api/signup')
+		//}
+	], next);
+};
 
-const Chairo = require('chairo')
-
-// out plugins
-const CrontorAuth = require('././plugin')
-
-function endIfErr (err) {
-	if (err) {
-		console.error(err)
-		process.exit(1)
-	}
-}
-
-var server = new Hapi.Server()
-server.connection({port: 3000})
-
-var plugins = [
-	{register: Chairo},
-	CrontorAuth
-]
-
-server.register(plugins, function (err) {
-	endIfErr(err)
-
-	server.start(endIfErr)
-})
+exports.register.attributes = {
+	pkg: require('./package.json')
+};
