@@ -1,103 +1,106 @@
 'use strict';
 
 const Session = null;
-const User = null;
 
-function login(request, reply) {
+class Login {
+	constructor(server) {
+		this._server = server;
+	}
 
-	request.cookieAuth.set({ sid: request.pre.session.id })
+	login(request, reply) {
 
-	reply({
-		user: request.pre.user
-	});
-}
+		request.cookieAuth.set({sid: request.pre.session.id})
 
-function forgotPassword(request, reply) {
+		reply({
+			user: request.pre.user
+		});
+	}
 
-	const mailer = request.server.plugins.mailer;
+	forgotPassword(request, reply) {
 
-	Async.auto({
-		keyHash: function (done) {
+		const mailer = request.server.plugins.mailer;
 
-			Session.generateKeyHash(done);
-		},
-		user: ['keyHash', function (results, done) {
+		Async.auto({
+			keyHash: function (done) {
 
-			const id = request.pre.user._id.toString();
-			const update = {
-				$set: {
-					resetPassword: {
-						token: results.keyHash.hash,
-						expires: Date.now() + 10000000
+				Session.generateKeyHash(done);
+			},
+			user: ['keyHash', function (results, done) {
+
+				const id = request.pre.user._id.toString();
+				const update = {
+					$set: {
+						resetPassword: {
+							token: results.keyHash.hash,
+							expires: Date.now() + 10000000
+						}
 					}
-				}
-			};
+				};
 
-			User.findByIdAndUpdate(id, update, done);
-		}],
-		email: ['user', function (results, done) {
+				User.findByIdAndUpdate(id, update, done);
+			}],
+			email: ['user', function (results, done) {
 
-			const emailOptions = {
-				subject: 'Reset your ' + Config.get('/projectName') + ' password',
-				to: request.payload.email
-			};
-			const template = 'forgot-password';
-			const context = {
-				key: results.keyHash.key
-			};
+				const emailOptions = {
+					subject: 'Reset your ' + Config.get('/projectName') + ' password',
+					to: request.payload.email
+				};
+				const template = 'forgot-password';
+				const context = {
+					key: results.keyHash.key
+				};
 
-			mailer.sendEmail(emailOptions, template, context, done);
-		}]
-	}, (err, results) => {
+				mailer.sendEmail(emailOptions, template, context, done);
+			}]
+		}, (err, results) => {
 
-		if (err) {
-			return reply(err);
-		}
-
-		reply({message: 'Success.'});
-	});
-}
-
-function resetPassword(request, reply) {
-	Async.auto({
-		keyMatch: function (done) {
-
-			const key = request.payload.key;
-			const token = request.pre.user.resetPassword.token;
-			Bcrypt.compare(key, token, done);
-		},
-		passwordHash: ['keyMatch', function (results, done) {
-
-			if (!results.keyMatch) {
-				return reply(Boom.badRequest('Invalid email or key.'));
+			if (err) {
+				return reply(err);
 			}
 
-			User.generatePasswordHash(request.payload.password, done);
-		}],
-		user: ['passwordHash', function (results, done) {
+			reply({message: 'Success.'});
+		});
+	}
 
-			const id = request.pre.user._id.toString();
-			const update = {
-				$set: {
-					password: results.passwordHash.hash
-				},
-				$unset: {
-					resetPassword: undefined
+	resetPassword(request, reply) {
+		Async.auto({
+			keyMatch: function (done) {
+
+				const key = request.payload.key;
+				const token = request.pre.user.resetPassword.token;
+				Bcrypt.compare(key, token, done);
+			},
+			passwordHash: ['keyMatch', function (results, done) {
+
+				if (!results.keyMatch) {
+					return reply(Boom.badRequest('Invalid email or key.'));
 				}
-			};
 
-			User.findByIdAndUpdate(id, update, done);
-		}]
-	}, (err, results) => {
+				User.generatePasswordHash(request.payload.password, done);
+			}],
+			user: ['passwordHash', function (results, done) {
 
-		if (err) {
-			return reply(err);
-		}
+				const id = request.pre.user._id.toString();
+				const update = {
+					$set: {
+						password: results.passwordHash.hash
+					},
+					$unset: {
+						resetPassword: undefined
+					}
+				};
 
-		reply({message: 'Success.'});
-	});
+				User.findByIdAndUpdate(id, update, done);
+			}]
+		}, (err, results) => {
+
+			if (err) {
+				return reply(err);
+			}
+
+			reply({message: 'Success.'});
+		});
+	}
 }
 
-exports.resetPassword = resetPassword;
-exports.forgotPassword = forgotPassword;
-exports.login = login;
+module.exports = Login;

@@ -32,4 +32,4 @@ class Session {
 	}
 }
 
-exports.Session = Session;
+module.exports = Session;

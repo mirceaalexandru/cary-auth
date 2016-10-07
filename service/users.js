@@ -32,7 +32,7 @@ class User {
 		const password = request.payload.password;
 		const email = request.payload.email;
 
-		UserModel.create({
+		UserModel.create(request.server.plugins.db.instance, {
 			username: username,
 			password: password,
 			email: email
@@ -43,6 +43,13 @@ class User {
 
 			reply(user);
 		});
+	}
+
+	findOne(query, done) {
+		UserModel.findOne(
+			this._server.plugins.db.instance,
+			query,
+			done);
 	}
 
 	updateUser(request, reply) {
@@ -56,6 +63,14 @@ class User {
 			}
 		};
 	}
-};
+
+	findByCredentials(username, password, done) {
+		this.findOne({
+			username: username,
+			password: password
+		},
+		done)
+	}
+}
 
 module.exports = User;

@@ -5,15 +5,15 @@ exports.register = function (server, options, next) {
 		{
 			register: require('./api/users')
 		},
-		//{
-		//	register: require('./api/login')
-		//},
+		{
+			register: require('./api/login')
+		},
 		//{
 		//	register: require('./api/logout')
 		//},
-		//{
-		//	register: require('./api/signup')
-		//}
+		{
+			register: require('./api/signup')
+		}
 	], next);
 };
 

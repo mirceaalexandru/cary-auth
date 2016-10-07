@@ -4,13 +4,17 @@ const Boom = require('boom');
 const Joi = require('joi');
 const Auth = require('./../service/auth');
 
-const Service = require('./../service/login');
-const User = require('./../service/users');
-const Session = require('./../service/session');
+const LoginService = require('./../service/login');
+const UserService = require('./../service/users');
+const SessionService = require('./../service/session');
 
 const internals = {};
 
 internals.applyRoutes = function (server, next) {
+
+	var Login = new LoginService(server);
+	var User = new UserService(server);
+	var Session = new SessionService(server);
 
 	server.route({
 		method: 'POST',
@@ -98,10 +102,10 @@ internals.applyRoutes = function (server, next) {
 				}
 			]
 		},
-		handler: Service.login
+		handler: Login.login
 	});
 
-
+/*
 	server.route({
 		method: 'POST',
 		path: '/login/forgot',
@@ -182,7 +186,7 @@ internals.applyRoutes = function (server, next) {
 		},
 		handler: Service.resetPassword
 	});
-
+*/
 
 	next();
 };
