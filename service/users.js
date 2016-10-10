@@ -41,7 +41,7 @@ class User {
 				return reply(err);
 			}
 
-			reply(user);
+			reply({user: user});
 		});
 	}
 

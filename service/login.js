@@ -8,8 +8,7 @@ class Login {
 	}
 
 	login(request, reply) {
-
-		request.cookieAuth.set({sid: request.pre.session.id})
+		request.cookieAuth.set({sid: request.pre.session._id})
 
 		reply({
 			user: request.pre.user

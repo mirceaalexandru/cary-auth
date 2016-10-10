@@ -7,6 +7,7 @@ const Auth = require('./../service/auth');
 const LoginService = require('./../service/login');
 const UserService = require('./../service/users');
 const SessionService = require('./../service/session');
+const APIConfig = require('./config/login');
 
 const internals = {};
 
@@ -20,15 +21,11 @@ internals.applyRoutes = function (server, next) {
 		method: 'POST',
 		path: '/login',
 		config: {
-			description: 'Login',
-			tags: ['auth'],
+			description: APIConfig.login.description,
+			tags: ['auth', 'doc'],
 			auth: false,
-			validate: {
-				payload: {
-					username: Joi.string().lowercase().required(),
-					password: Joi.string().required()
-				}
-			},
+			validate: APIConfig.login.validate,
+			response: APIConfig.login.response,
 			pre: [
 				{
 					assign: 'abuseDetected',
@@ -65,7 +62,8 @@ internals.applyRoutes = function (server, next) {
 							reply(user);
 						});
 					}
-				}, {
+				},
+				{
 					assign: 'logAttempt',
 					method: function (request, reply) {
 
@@ -76,14 +74,14 @@ internals.applyRoutes = function (server, next) {
 						const ip = request.info.remoteAddress;
 						const username = request.payload.username;
 
-						AuthAttempt.create(ip, username, (err, authAttempt) => {
-
-							if (err) {
-								return reply(err);
-							}
+						//AuthAttempt.create(ip, username, (err, authAttempt) => {
+						//
+						//	if (err) {
+						//		return reply(err);
+						//	}
 
 							return reply(Boom.badRequest('Username and password combination not found or account is inactive.'));
-						});
+						//});
 					}
 				},
 				{

@@ -1,44 +1,44 @@
 'use strict';
 const Boom = require('boom');
-
+const APIConfig = require('./config/logout');
+const SessionService = require('./../service/session');
 
 const internals = {};
 
 
 internals.applyRoutes = function (server, next) {
-
-	const Session = server.plugins['hapi-mongo-models'].Session;
-
+	var Session = new SessionService(server);
 
 	server.route({
-		method: 'DELETE',
+		method: 'POST',
 		path: '/logout',
 		config: {
+			description: APIConfig.logout.description,
+			tags: ['auth', 'doc'],
+			response: APIConfig.logout.response,
 			auth: {
 				mode: 'try',
-				strategy: 'simple'
+				strategy: 'session'
 			}
 		},
 		handler: function (request, reply) {
+			const credentials = request.auth.credentials || {_id: ""};
+			const session = credentials._id.toString();
 
-			const credentials = request.auth.credentials || {session: {}};
-			const session = credentials.session || {};
-
-			Session.findByIdAndDelete(session._id, (err, sessionDoc) = > {
-
+			if (!session) {
+				return reply(Boom.notFound('Document not found.'));
+			}
+			Session.findByIdAndDelete(session, (err, sessionDoc) => {
 				if (err) {
 					return reply(err);
 				}
 
-				if (
-			!sessionDoc
-			)
-			{
-				return reply(Boom.notFound('Document not found.'));
-			}
+				if (!sessionDoc) {
+					return reply(Boom.notFound('Document not found.'));
+				}
 
-			reply({message: 'Success.'});
-		})
+				reply({message: 'Success.'});
+			})
 			;
 		}
 	});
@@ -50,8 +50,7 @@ internals.applyRoutes = function (server, next) {
 
 exports.register = function (server, options, next) {
 
-	server.dependency(['auth', 'hapi-mongo-models'], internals.applyRoutes);
-
+	server.dependency(['hapi-auth-cookie'], internals.applyRoutes);
 	next();
 };
 

@@ -8,27 +8,33 @@ class Session {
 	}
 
 	create(userId, reply) {
-		SessionModel.create({
-			userId: userId
-		}, (err, session) => {
-			if (err) {
-				return reply(err);
-			}
+		SessionModel.create(
+			this._server.plugins.db.instance,
+			{
+				userId: userId
+			}, (err, session) => {
+				if (err) {
+					return reply(err);
+				}
 
-			reply(session);
-		});
+				reply(session);
+			});
 	}
 
 	get(sessionId, done) {
-		SessionModel.findOne({
-			_id: new ObjectID(sessionId)
-		}, (err, session) => {
-			if (err) {
-				return done(err);
-			}
+		SessionModel.findOne(
+			this._server.plugins.db.instance,
+			{
+				_id: sessionId
+			}, done);
+	}
 
-			done(null, session);
-		});
+	findByIdAndDelete(sessionId, done) {
+		SessionModel.findByIdAndDelete(
+			this._server.plugins.db.instance,
+			{
+				_id: sessionId
+			}, done);
 	}
 }
 

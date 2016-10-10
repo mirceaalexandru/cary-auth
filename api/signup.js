@@ -3,8 +3,8 @@
 const Boom = require('boom');
 const Joi = require('joi');
 const UserService = require('./../service/users');
+const APIConfig = require('./config/signup');
 
-const tags = ['auth', 'user'];
 const internals = {};
 
 internals.applyRoutes = function (server, next) {
@@ -14,18 +14,13 @@ internals.applyRoutes = function (server, next) {
 	// signup user
 	server.route({
 		method: 'POST',
-		path: '/users',
+		path: '/signup',
 		config: {
-			description: 'Create user',
-			tags: tags,
+			description: APIConfig.signup.description,
+			tags: ['auth', 'user'],
 			auth: false,
-			validate: {
-				payload: {
-					username: Joi.string().token().lowercase().required(),
-					password: Joi.string().required(),
-					email: Joi.string().email().lowercase().required()
-				}
-			},
+			response: APIConfig.signup.response,
+			validate: APIConfig.signup.validate,
 			pre: [
 				{
 					assign: 'usernameCheck',
