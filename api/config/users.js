@@ -2,6 +2,34 @@
 
 const Joi = require('joi');
 
+var descriptionCurrentUser =
+	'Get current logged in user information.' +
+	'<br>' +
+	'<br> ' +
+	'Usage: <br>' +
+	'<i>curl -i -b "sid=Fe26.2**922304f9f..." http://localhost:9090/users/my</i>' +
+	'<br>';
+
+var responseCurrentUser = {
+	failAction: 'log',
+	status: {
+		200: Joi.object({
+			user: Joi.object({
+				_id: Joi.string().required(),
+				username: Joi.string().required(),
+				email: Joi.string().required(),
+				firstName: Joi.string().required(),
+				lastName: Joi.string().required()
+			})
+		}),
+		401: Joi.object({
+			statusCode: Joi.number().required(),
+			error: Joi.string().required(),
+			message: Joi.string().required()
+		})
+	}
+}
+
 var descriptionGetUser =
 	'Get user information.' +
 	'<br>' +
@@ -45,7 +73,7 @@ var descriptionUpdateUser =
 
 var validateUpdateUser = {
 	params: {
-		id: Joi.string().invalid('000000000000000000000000')
+		id: Joi.string().required()
 	},
 	payload: {
 		_id: Joi.string().required(),
@@ -98,10 +126,10 @@ var descriptionChangePassword =
 
 var validateChangePassword = {
 	params: {
-		id: Joi.string().invalid('000000000000000000000000')
+		id: Joi.string().required()
 	},
 	payload: {
-		password: Joi.string().required()
+		password: Joi.string().min(6).required()
 	}
 };
 
@@ -126,6 +154,11 @@ var responseChangePassword = {
 		})
 	}
 }
+
+module.exports.getCurrentUser = {
+	description: descriptionCurrentUser,
+	response: responseCurrentUser
+};
 
 module.exports.getUser = {
 	description: descriptionGetUser,

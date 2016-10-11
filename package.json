@@ -1,6 +1,6 @@
 {
   "name": "server-auth",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Server auth plugin for Hapi",
   "main": "lib/plugin.js",
   "scripts": {
@@ -10,7 +10,6 @@
   "author": "Mircea Alexandru",
   "dependencies": {
     "boom": "^4.0.0",
-    "joi": "^9.1.0",
-    "seneca-user": "^2.1.0"
+    "joi": "^9.1.0"
   }
 }

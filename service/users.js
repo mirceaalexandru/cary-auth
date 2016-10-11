@@ -10,22 +10,41 @@ class User {
 	}
 
 	getUser(request, reply) {
-		var userId = request.params.id
+		this.getUserImpl(request.params.id, function (err, user) {
+			if (err) {
+				return reply(err)
+			}
 
+			reply({user: user});
+		})
+	}
+
+	getCurrentUser(request, reply) {
+		var userId = request.auth.credentials.userId;
+		this.getUserImpl(userId, function (err, user) {
+			if (err) {
+				return reply(err)
+			}
+
+			reply({user: user});
+		})
+	}
+
+	getUserImpl(userId, done) {
 		UserModel.findOne(
-			request.server.plugins.db.instance,
+			this._server.plugins.db.instance,
 			{
 				_id: userId
 			}, (err, user) => {
 				if (err) {
-					return reply(err);
+					return done(err);
 				}
 
 				if (!user) {
-					return reply(Boom.notFound('Document not found.'));
+					return done(Boom.notFound('Document not found.'));
 				}
 
-				reply({user: user});
+				done(null, {user: user});
 			});
 	}
 

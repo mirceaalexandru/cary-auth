@@ -11,12 +11,27 @@ internals.applyRoutes = function (server, next) {
 
 	var User = new UserService(server);
 
+	// get current logged in user
+	server.route({
+		method: 'get',
+		path: '/users/my',
+		config: {
+			description: APIConfig.getCurrentUser.description,
+			response: APIConfig.getCurrentUser.response,
+			tags: ['user']
+		},
+		handler: function (request, reply) {
+			User.getCurrentUser(request, reply);
+		}
+	});
+
 	// get user
 	server.route({
 		method: 'GET',
 		path: '/users/{id}',
 		config: {
 			description: APIConfig.getUser.description,
+			response: APIConfig.getUser.response,
 			tags: ['user']
 		},
 		handler: function (request, reply) {
