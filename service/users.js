@@ -12,19 +12,21 @@ class User {
 	getUser(request, reply) {
 		var userId = request.params.id
 
-		UserModel.findOne({
-			_id: userId
-		}, (err, user) => {
-			if (err) {
-				return reply(err);
-			}
+		UserModel.findOne(
+			request.server.plugins.db.instance,
+			{
+				_id: userId
+			}, (err, user) => {
+				if (err) {
+					return reply(err);
+				}
 
-			if (!user) {
-				return reply(Boom.notFound('Document not found.'));
-			}
+				if (!user) {
+					return reply(Boom.notFound('Document not found.'));
+				}
 
-			reply(user);
-		});
+				reply({user: user});
+			});
 	}
 
 	createUser(request, reply) {
@@ -53,23 +55,25 @@ class User {
 	}
 
 	updateUser(request, reply) {
+		UserModel.update(
+			request.server.plugins.db.instance,
+			request.payload,
+			(err, user) => {
+				if (err) {
+					return reply(err);
+				}
 
-		const id = request.params.id;
-		const update = {
-			$set: {
-				isActive: request.payload.isActive,
-				username: request.payload.username,
-				email: request.payload.email
-			}
-		};
+				reply({user: user});
+			});
 	}
 
 	findByCredentials(username, password, done) {
-		this.findOne({
-			username: username,
-			password: password
-		},
-		done)
+		this.findOne(
+			{
+				username: username,
+				password: password
+			},
+			done)
 	}
 }
 

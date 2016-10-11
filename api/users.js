@@ -3,24 +3,21 @@
 const Boom = require('boom');
 const Joi = require('joi');
 const UserService = require('./../service/users');
+const APIConfig = require('./config/users');
 
-const tagsWIP = ['user', 'wip'];
-const tags = ['user'];
 const internals = {};
 
 internals.applyRoutes = function (server, next) {
 
 	var User = new UserService(server);
 
+	// get user
 	server.route({
 		method: 'GET',
 		path: '/users/{id}',
 		config: {
-			description: 'Get user information',
-			tags: tagsWIP,
-			auth: {
-				strategy: 'session'
-			}
+			description: APIConfig.getUser.description,
+			tags: ['user']
 		},
 		handler: User.getUser
 	});
@@ -30,18 +27,10 @@ internals.applyRoutes = function (server, next) {
 		method: 'PUT',
 		path: '/users/{id}',
 		config: {
-			description: 'Update user information',
-			tags: tagsWIP,
-			validate: {
-				params: {
-					id: Joi.string().invalid('000000000000000000000000')
-				},
-				payload: {
-					isActive: Joi.boolean().required(),
-					username: Joi.string().token().lowercase().required(),
-					email: Joi.string().email().lowercase().required()
-				}
-			},
+			description: APIConfig.updateUser.description,
+			tags: ['user'],
+			response: APIConfig.updateUser.response,
+			validate: APIConfig.updateUser.validate,
 			pre: [
 				{
 					assign: 'usernameCheck',
@@ -49,7 +38,7 @@ internals.applyRoutes = function (server, next) {
 
 						const conditions = {
 							username: request.payload.username,
-							_id: {$ne: User._idClass(request.params.id)}
+							_id: {$ne: request.params.id}
 						};
 
 						User.findOne(conditions, (err, user) => {
@@ -72,7 +61,7 @@ internals.applyRoutes = function (server, next) {
 
 						const conditions = {
 							email: request.payload.email,
-							_id: {$ne: User._idClass(request.params.id)}
+							_id: {$ne: request.params.id}
 						};
 
 						User.findOne(conditions, (err, user) => {
