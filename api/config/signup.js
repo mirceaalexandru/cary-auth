@@ -6,7 +6,7 @@ var description = 'Signup user.' +
 	'<br>' +
 	'<br> ' +
 	'Usage: <br>' +
-	'<i>curl -i -X POST -H "Content-Type: application/json" -d \'{"email": "xxxx@cutu.citu1", "password": "qweqweqweqwe1", "username": "sasdasdasd", "firstName": "malex", "lastName": "malex"}\' http://localhost:9090/users</i>' +
+	'<i>curl -i -X POST -H "Content-Type: application/json" -d \'{"email": "xxxx@cutu.citu1", "password": "qweqweqweqwe1", "username": "sasdasdasd", "firstName": "malex", "lastName": "malex"}\' http://localhost:9090/signup</i>' +
 	'<br> ';
 
 var validate = {
