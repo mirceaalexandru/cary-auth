@@ -56,6 +56,8 @@ class User {
 
 	updateUser(request, reply) {
 		var context = this;
+
+
 		UserModel.update(
 			request.server.plugins.db.instance,
 			{_id: request.params.id},
@@ -66,6 +68,39 @@ class User {
 				}
 
 				context.getUser(request, reply);
+			});
+	}
+
+	changePassword(request, reply) {
+		var userId = request.params.id
+
+		UserModel.findOne(
+			request.server.plugins.db.instance,
+			{
+				_id: userId
+			}, (err, user) => {
+				if (err) {
+					return reply(err);
+				}
+
+				if (!user) {
+					return reply(Boom.notFound('Document not found.'));
+				}
+
+				delete user._id;
+				user.password = request.payload.password
+
+				UserModel.update(
+					request.server.plugins.db.instance,
+					{_id: request.params.id},
+					user,
+					(err) => {
+						if (err) {
+							return reply(err);
+						}
+
+						reply({});
+					});
 			});
 	}
 

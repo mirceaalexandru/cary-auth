@@ -86,41 +86,33 @@ internals.applyRoutes = function (server, next) {
 		}
 	});
 
-	//server.route({
-	//	method: 'PUT',
-	//	path: '/users/{id}/password',
-	//	config: {
-	//		description: 'Change user password',
-	//		tags: tagsWIP,
-	//		auth: {
-	//			strategy: 'session'
-	//		},
-	//		validate: {
-	//			params: {
-	//				id: Joi.string().invalid('000000000000000000000000')
-	//			},
-	//			payload: {
-	//				password: Joi.string().required()
-	//			}
-	//		},
-	//		pre: [
-	//			{
-	//				assign: 'password',
-	//				method: function (request, reply) {
-	//
-	//					User.generatePasswordHash(request.payload.password, (err, hash) => {
-	//						if (err) {
-	//							return reply(err);
-	//						}
-	//
-	//						reply(hash);
-	//					});
-	//				}
-	//			}
-	//		]
-	//	},
-	//	handler: User.changePassword
-	//});
+	server.route({
+		method: 'PUT',
+		path: '/users/{id}/password',
+		config: {
+			description: APIConfig.changePassword.description,
+			tags: ['auth', 'user'],
+			response: APIConfig.changePassword.response,
+			validate: APIConfig.changePassword.validate,
+			pre: [
+				{
+					assign: 'password',
+					method: function (request, reply) {
+						//User.generatePasswordHash(request.payload.password, (err, hash) => {
+						//	if (err) {
+						//		return reply(err);
+						//	}
+
+							reply(/*hash*/request.payload.password);
+						//});
+					}
+				}
+			]
+		},
+		handler: function (request, reply) {
+			User.changePassword(request, reply);
+		}
+	});
 
 	next();
 };

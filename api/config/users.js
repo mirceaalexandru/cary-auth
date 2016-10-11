@@ -88,6 +88,45 @@ var responseUpdateUser = {
 	}
 }
 
+var descriptionChangePassword =
+	'Change user password.' +
+	'<br>' +
+	'<br> ' +
+	'Usage: <br>' +
+	'<i>curl -i -H -X PUT "Content-Type: application/json" -d \'{"password":"xxx"}\'  -b "sid=Fe26.2**922304f9f..." http://localhost:9090/users/57f55bb0930f6c0366598389/password</i>' +
+	'<br>';
+
+var validateChangePassword = {
+	params: {
+		id: Joi.string().invalid('000000000000000000000000')
+	},
+	payload: {
+		password: Joi.string().required()
+	}
+};
+
+var responseChangePassword = {
+	failAction: 'log',
+	status: {
+		200: Joi.object(),
+		401: Joi.object({
+			statusCode: Joi.number().required(),
+			error: Joi.string().required(),
+			message: Joi.string().required()
+		}),
+		404: Joi.object({
+			statusCode: Joi.number().required(),
+			error: Joi.string().required(),
+			message: Joi.string().required()
+		}),
+		409: Joi.object({
+			statusCode: Joi.number().required(),
+			error: Joi.string().required(),
+			message: Joi.string().required()
+		})
+	}
+}
+
 module.exports.getUser = {
 	description: descriptionGetUser,
 	response: responseGetUser
@@ -97,4 +136,10 @@ module.exports.updateUser = {
 	validate: validateUpdateUser,
 	description: descriptionUpdateUser,
 	response: responseUpdateUser
+};
+
+module.exports.changePassword = {
+	validate: validateChangePassword,
+	description: descriptionChangePassword,
+	response: responseChangePassword
 };
