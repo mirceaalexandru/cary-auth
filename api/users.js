@@ -19,7 +19,9 @@ internals.applyRoutes = function (server, next) {
 			description: APIConfig.getUser.description,
 			tags: ['user']
 		},
-		handler: User.getUser
+		handler: function (request, reply) {
+			User.getUser(request, reply);
+		}
 	});
 
 	// update user
@@ -79,7 +81,9 @@ internals.applyRoutes = function (server, next) {
 				}
 			]
 		},
-		handler: User.updateUser
+		handler: function (request, reply) {
+			User.updateUser(request, reply);
+		}
 	});
 
 	//server.route({

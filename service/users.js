@@ -55,15 +55,17 @@ class User {
 	}
 
 	updateUser(request, reply) {
+		var context = this;
 		UserModel.update(
 			request.server.plugins.db.instance,
+			{_id: request.params.id},
 			request.payload,
 			(err, user) => {
 				if (err) {
 					return reply(err);
 				}
 
-				reply({user: user});
+				context.getUser(request, reply);
 			});
 	}
 

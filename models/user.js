@@ -10,8 +10,8 @@ function findOne(DB, cond, done) {
 	DB.findOne(UsersColl, cond, done);
 }
 
-function update(DB, cond, done) {
-	DB.update(UsersColl, cond, done);
+function update(DB, cond, setValues, done) {
+	DB.update(UsersColl, cond, setValues, done);
 }
 
 exports.create = create;

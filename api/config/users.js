@@ -40,7 +40,7 @@ var descriptionUpdateUser =
 	'<br>' +
 	'<br> ' +
 	'Usage: <br>' +
-	'<i>curl -i -b "sid=Fe26.2**922304f9f..." http://localhost:9090/users/57f55bb0930f6c0366598389</i>' +
+	'<i>curl -i -H "Content-Type: application/json" -d \'{"username":"admin_", "isActive": true, "_id": "57f55bb0930f6c0366598380", "email": "wer@wer.wer", "firstName": "123", "lastName": "asd"}\'  -b "sid=Fe26.2**922304f9f..." http://localhost:9090/users/57f55bb0930f6c0366598389</i>' +
 	'<br>';
 
 var validateUpdateUser = {
@@ -62,7 +62,7 @@ var responseUpdateUser = {
 	status: {
 		200: Joi.object({
 			user: Joi.object({
-				_id: Joi.string().required(),
+				_id: Joi.string(),
 				isActive: Joi.boolean().required(),
 				username: Joi.string().required(),
 				email: Joi.string().required(),
