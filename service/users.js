@@ -16,7 +16,7 @@ class User {
 				return reply(err)
 			}
 
-			reply({user: user});
+			reply(user);
 		})
 	}
 
@@ -27,7 +27,7 @@ class User {
 				return reply(err)
 			}
 
-			reply({user: user});
+			reply(user);
 		})
 	}
 
@@ -45,6 +45,8 @@ class User {
 					return done(Boom.notFound('Document not found.'));
 				}
 
+				delete user.password
+				delete user.salt
 				done(null, {user: user});
 			});
 	}
@@ -56,6 +58,8 @@ class User {
 					return reply(err);
 				}
 
+				delete user.password
+				delete user.salt
 				reply({user: user});
 			});
 		});

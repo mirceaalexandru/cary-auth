@@ -64,7 +64,9 @@ internals.applyRoutes = function (server, next) {
 				}
 			]
 		},
-		handler: User.createUser
+		handler: function (request, reply) {
+			User.createUser(request, reply);
+		}
 	});
 
 	next();

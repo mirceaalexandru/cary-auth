@@ -2,15 +2,30 @@
   "name": "server-auth",
   "version": "0.0.2",
   "description": "Server auth plugin for Hapi",
-  "main": "lib/plugin.js",
+  "main": "lib/index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "lab --pattern test -r console -v"
   },
   "author": "Mircea Alexandru",
   "dependencies": {
     "bcrypt": "^0.8.7",
     "boom": "^4.0.0",
     "joi": "^9.1.0"
+  },
+  "pre-commit": [
+    "test"
+  ],
+  "engines": {
+    "node": ">=4.3.0"
+  },
+  "devDependencies": {
+    "bell": "^8.3.0",
+    "code": "^4.0.0",
+    "hapi": "^15.1.1",
+    "hapi-auth-cookie": "^6.1.1",
+    "lab": "^11.1.0",
+    "lodash": "^4.16.4",
+    "node-uuid": "^1.4.7",
+    "pre-commit": "^1.1.3"
   }
 }
