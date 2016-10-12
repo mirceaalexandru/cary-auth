@@ -33,11 +33,13 @@ internals.applyRoutes = function (server, next) {
 					return reply(err);
 				}
 
-				if (!sessionDoc) {
-					return reply(Boom.notFound('Document not found.'));
-				}
+				request.server.app.cache.drop(session, function (err, data) {
+					if (!sessionDoc) {
+						return reply(Boom.notFound('Document not found.'));
+					}
 
-				reply({message: 'Success.'});
+					reply({message: 'Success.'});
+				})
 			})
 			;
 		}

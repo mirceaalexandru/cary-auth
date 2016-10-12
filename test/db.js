@@ -39,7 +39,7 @@ exports.register = function (server, options, next) {
 		},
 
 		findByIdAndDelete: function (coll, cond, done) {
-			internals.findOne(cond, function (err, doc) {
+			internals.findOne(coll, cond, function (err, doc) {
 				if (err) {
 					return done(err);
 				}
@@ -54,7 +54,7 @@ exports.register = function (server, options, next) {
 		},
 
 		update: function (coll, cond, setValues, done) {
-			internals.findOne(cond, function (err, doc) {
+			internals.findOne(coll, cond, function (err, doc) {
 				if (err) {
 					return done(err);
 				}
@@ -63,6 +63,7 @@ exports.register = function (server, options, next) {
 					return done();
 				}
 
+				doc = _.merge({}, doc, setValues);
 				getCollection(coll)[doc._id] = doc;
 				return done(err, _.clone(doc));
 			});
