@@ -12,7 +12,7 @@ var description = 'Login user.' +
 var validate = {
 	payload: {
 		username: Joi.string().token().lowercase().required(),
-		password: Joi.string().min(6).required()
+		password: Joi.string().min(8).required()
 	},
 };
 

@@ -129,7 +129,7 @@ var validateChangePassword = {
 		id: Joi.string().required()
 	},
 	payload: {
-		password: Joi.string().min(6).required()
+		password: Joi.string().min(8).required()
 	}
 };
 
