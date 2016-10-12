@@ -2,6 +2,7 @@
 
 const Boom = require('boom');
 const UserModel = require('./../models/user');
+const Bcrypt = require('bcrypt');
 
 class User {
 
@@ -49,21 +50,26 @@ class User {
 	}
 
 	createUser(request, reply) {
-		const username = request.payload.username;
-		const password = request.payload.password;
-		const email = request.payload.email;
+		this.hashPwd(request.payload, function () {
+			UserModel.create(request.server.plugins.db.instance, request.payload, (err, user) => {
+				if (err) {
+					return reply(err);
+				}
 
-		UserModel.create(request.server.plugins.db.instance, {
-			username: username,
-			password: password,
-			email: email
-		}, (err, user) => {
-			if (err) {
-				return reply(err);
-			}
-
-			reply({user: user});
+				reply({user: user});
+			});
 		});
+	}
+
+	hashPwd (user, done) {
+		Bcrypt.genSalt(10, function (err, salt) {
+			user.salt = user.salt || salt;
+
+			Bcrypt.hash(user.password, user.salt, function (err, pwd) {
+				user.password = pwd;
+				done();
+			})
+		})
 	}
 
 	findOne(query, done) {
@@ -75,7 +81,6 @@ class User {
 
 	updateUser(request, reply) {
 		var context = this;
-
 
 		UserModel.update(
 			request.server.plugins.db.instance,
@@ -109,27 +114,51 @@ class User {
 				delete user._id;
 				user.password = request.payload.password
 
-				UserModel.update(
-					request.server.plugins.db.instance,
-					{_id: request.params.id},
-					user,
-					(err) => {
-						if (err) {
-							return reply(err);
-						}
+				this.hashPwd (user, function() {
+					UserModel.update(
+						request.server.plugins.db.instance,
+						{_id: request.params.id},
+						user,
+						(err) => {
+							if (err) {
+								return reply(err);
+							}
 
-						reply({});
-					});
+							reply({});
+						});
+				});
 			});
 	}
 
 	findByCredentials(username, password, done) {
+		var context = this;
 		this.findOne(
 			{
-				username: username,
-				password: password
+				username: username
 			},
-			done)
+			function (err, user) {
+				if (err) {
+					return done(err);
+				}
+				if (!user) {
+					return done();
+				}
+
+				var match = {
+					password: password,
+					salt: user.salt
+				}
+
+				context.hashPwd (match, function() {
+					if (match.password === user.password) {
+						delete user.password;
+						delete user.salt;
+						return done(err, user)
+					} else {
+						return done();
+					}
+				})
+			})
 	}
 }
 

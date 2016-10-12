@@ -9,6 +9,7 @@
   },
   "author": "Mircea Alexandru",
   "dependencies": {
+    "bcrypt": "^0.8.7",
     "boom": "^4.0.0",
     "joi": "^9.1.0"
   }
