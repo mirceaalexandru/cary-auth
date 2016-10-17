@@ -1,8 +1,6 @@
 'use strict';
 
 const Boom = require('boom');
-const Joi = require('joi');
-const Auth = require('./../service/auth');
 
 const LoginService = require('./../service/login');
 const UserService = require('./../service/users');
