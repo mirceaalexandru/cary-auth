@@ -10,7 +10,8 @@
   "dependencies": {
     "bcrypt": "^0.8.7",
     "boom": "^4.0.0",
-    "joi": "^9.1.0"
+    "joi": "^9.1.0",
+    "lodash": "^4.16.4"
   },
   "pre-commit": [
     "test"
@@ -24,7 +25,6 @@
     "hapi": "^15.1.1",
     "hapi-auth-cookie": "^6.1.1",
     "lab": "^11.1.0",
-    "lodash": "^4.16.4",
     "node-uuid": "^1.4.7",
     "pre-commit": "^1.1.3"
   }

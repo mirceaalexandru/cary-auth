@@ -15,6 +15,9 @@ exports.register = function (server, options, next) {
 			register: require('./api/logout')
 		},
 		{
+			register: require('./api/reset')
+		},
+		{
 			register: require('./api/signup')
 		}
 	], next);
