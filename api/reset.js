@@ -27,9 +27,7 @@ internals.applyRoutes = function (server, next) {
 					method: function (request, reply) {
 
 						const email = request.payload.email;
-
 						User.findOne({email: email}, (err, user) => {
-
 							if (err) {
 								return reply(err);
 							}
