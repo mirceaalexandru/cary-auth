@@ -28,26 +28,6 @@ internals.applyRoutes = function (server, next) {
 			response: APIConfig.login.response,
 			pre: [
 				{
-					assign: 'abuseDetected',
-					method: function (request, reply) {
-
-						const ip = request.info.remoteAddress;
-						const username = request.payload.username;
-
-						Auth.abuseDetected(ip, username, (err, detected) => {
-							if (err) {
-								return reply(err);
-							}
-
-							if (detected) {
-								return reply(Boom.badRequest('Maximum number of auth attempts reached. Please try again later.'));
-							}
-
-							reply();
-						});
-					}
-				},
-				{
 					assign: 'user',
 					method: function (request, reply) {
 
@@ -64,30 +44,18 @@ internals.applyRoutes = function (server, next) {
 					}
 				},
 				{
-					assign: 'logAttempt',
+					assign: 'validateUser',
 					method: function (request, reply) {
-
 						if (request.pre.user) {
 							return reply();
 						}
 
-						const ip = request.info.remoteAddress;
-						const username = request.payload.username;
-
-						//AuthAttempt.create(ip, username, (err, authAttempt) => {
-						//
-						//	if (err) {
-						//		return reply(err);
-						//	}
-
-							return reply(Boom.badRequest('Username and password combination not found or account is inactive.'));
-						//});
+						return reply(Boom.badRequest('Username and password combination not found or account is inactive.'));
 					}
 				},
 				{
 					assign: 'session',
 					method: function (request, reply) {
-
 						Session.create(request.pre.user._id.toString(), (err, session) => {
 
 							if (err) {

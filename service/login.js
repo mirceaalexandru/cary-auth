@@ -1,6 +1,7 @@
 'use strict';
 
-const Session = null;
+const Boom = require('boom');
+const _ = require('lodash');
 
 class Login {
 	constructor(server) {
@@ -16,48 +17,20 @@ class Login {
 	}
 
 	forgotPassword(request, reply) {
+		const user = request.pre.user;
 
-		const mailer = request.server.plugins.mailer;
-
-		Async.auto({
-			keyHash: function (done) {
-
-				Session.generateKeyHash(done);
-			},
-			user: ['keyHash', function (results, done) {
-
-				const id = request.pre.user._id.toString();
-				const update = {
-					$set: {
-						resetPassword: {
-							token: results.keyHash.hash,
-							expires: Date.now() + 10000000
-						}
-					}
-				};
-
-				User.findByIdAndUpdate(id, update, done);
-			}],
-			email: ['user', function (results, done) {
-
-				const emailOptions = {
-					subject: 'Reset your ' + Config.get('/projectName') + ' password',
-					to: request.payload.email
-				};
-				const template = 'forgot-password';
-				const context = {
-					key: results.keyHash.key
-				};
-
-				mailer.sendEmail(emailOptions, template, context, done);
-			}]
-		}, (err, results) => {
-
+		let data = _.merge({}, user);
+		request.server.plugins['utils-mail'].send({
+			template: 'forgot-password',
+			data: data,
+			subject: 'Reset password',
+			to: user.email
+		}, function (err) {
 			if (err) {
-				return reply(err);
+				return reply(Boom.badRequest('Invalid email or key.'));
 			}
 
-			reply({message: 'Success.'});
+			reply({})
 		});
 	}
 
