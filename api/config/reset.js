@@ -7,6 +7,9 @@ var description = 'Forgot password - it will send an email for reset password.' 
 	'<br> ' +
 	'Usage: <br>' +
 	'<i>curl -i -X POST -H "Content-Type: application/json" -d \'{"email":"some@some.com"}\' http://localhost:9090/auth/forgot</i>' +
+	'<br> Note: the email sent to user will contain a reset url like this' +
+  '<br><strong>http://localhost:9090/#/reset/{token}</strong>' +
+	'<br>This path should be implemented on client side for asking the user for new password'
 	'<br>';
 
 var validate = {
