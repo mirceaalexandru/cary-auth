@@ -1,15 +1,11 @@
 'use strict'
 
-const Config = {};
-
-// Our hapi server
-const Hapi = require('hapi');
-
-const Server = new Hapi.Server();
-const port = 9091;
-
 function init(done) {
-	Server.connection({port: port});
+	// Our hapi server
+	const Hapi = require('hapi');
+	const Server = new Hapi.Server();
+
+	Server.connection();
 
 	Server.register([
 			{

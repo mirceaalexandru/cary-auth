@@ -20,7 +20,7 @@ class Login {
 		const user = request.pre.user;
 
 		let data = _.merge({}, user);
-		request.server.plugins['utils-token'].save({userId: user.id}, (err, token) => {
+		request.server.plugins['utils-token'].save({userId: user._id}, (err, token) => {
 			data.token = token;
 			request.server.plugins['utils-mail'].send({
 				template: 'forgot-password',
@@ -35,46 +35,6 @@ class Login {
 				reply({})
 			});
 		})
-	}
-
-	resetPassword(request, reply) {
-		Async.auto({
-			keyMatch: function (done) {
-
-				const key = request.payload.key;
-				const token = request.pre.user.resetPassword.token;
-				Bcrypt.compare(key, token, done);
-			},
-			passwordHash: ['keyMatch', function (results, done) {
-
-				if (!results.keyMatch) {
-					return reply(Boom.badRequest('Invalid email or key.'));
-				}
-
-				User.generatePasswordHash(request.payload.password, done);
-			}],
-			user: ['passwordHash', function (results, done) {
-
-				const id = request.pre.user._id.toString();
-				const update = {
-					$set: {
-						password: results.passwordHash.hash
-					},
-					$unset: {
-						resetPassword: undefined
-					}
-				};
-
-				User.findByIdAndUpdate(id, update, done);
-			}]
-		}, (err, results) => {
-
-			if (err) {
-				return reply(err);
-			}
-
-			reply({message: 'Success.'});
-		});
 	}
 }
 

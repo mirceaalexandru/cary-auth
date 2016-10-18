@@ -65,7 +65,7 @@ class User {
 		});
 	}
 
-	hashPwd (user, done) {
+	hashPwd(user, done) {
 		Bcrypt.genSalt(10, function (err, salt) {
 			user.salt = user.salt || salt;
 
@@ -99,8 +99,13 @@ class User {
 			});
 	}
 
+	resetPassword(request, reply) {
+		this.do_changeUserPassword(request.pre.user, request.payload.password, reply);
+	}
+
 	changePassword(request, reply) {
-		var userId = request.params.id
+		var userId = request.params.id;
+		var password = request.payload.password;
 
 		UserModel.findOne(
 			request.server.plugins.db.instance,
@@ -115,23 +120,29 @@ class User {
 					return reply(Boom.notFound('Document not found.'));
 				}
 
-				delete user._id;
-				user.password = request.payload.password
-
-				this.hashPwd (user, function() {
-					UserModel.update(
-						request.server.plugins.db.instance,
-						{_id: request.params.id},
-						user,
-						(err) => {
-							if (err) {
-								return reply(err);
-							}
-
-							reply({});
-						});
-				});
+				this.do_changeUserPassword(user, password, reply);
 			});
+	}
+
+	do_changeUserPassword(user, password, reply) {
+		let context = this;
+		let userId = user._id;
+		delete user._id;
+		user.password = password;
+
+		this.hashPwd(user, function () {
+			UserModel.update(
+				context._server.plugins.db.instance,
+				{_id: userId},
+				user,
+				(err) => {
+					if (err) {
+						return reply(err);
+					}
+
+					reply({});
+				});
+		});
 	}
 
 	findByCredentials(username, password, done) {
@@ -153,12 +164,13 @@ class User {
 					salt: user.salt
 				}
 
-				context.hashPwd (match, function() {
+				context.hashPwd(match, function () {
 					if (match.password === user.password) {
 						delete user.password;
 						delete user.salt;
 						return done(err, user)
-					} else {
+					}
+					else {
 						return done();
 					}
 				})

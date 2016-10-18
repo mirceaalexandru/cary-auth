@@ -3,13 +3,11 @@
 var Code = require('code');
 var expect = Code.expect;
 
-const Lab = require('lab')
-const lab = exports.lab = Lab.script()
-const suite = lab.suite
-const test = lab.test
-const before = lab.before
-
-const Helper = require('./helper')
+const Lab = require('lab');
+const lab = exports.lab = Lab.script();
+const suite = lab.suite;
+const test = lab.test;
+const before = lab.before;
 
 suite('User suite tests', () => {
 	let server
@@ -18,6 +16,7 @@ suite('User suite tests', () => {
 	let userPwd = '123123123aZ';
 
 	before({}, function (done) {
+		const Helper = require('./helper');
 		Helper.init(function (err, srv) {
 			expect(err).to.not.exist();
 

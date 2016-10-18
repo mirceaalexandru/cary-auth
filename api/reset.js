@@ -16,11 +16,11 @@ internals.applyRoutes = function (server, next) {
 		method: 'POST',
 		path: '/auth/forgot',
 		config: {
-			description: APIConfig.reset.description,
+			description: APIConfig.forgot.description,
 			tags: ['auth', 'user'],
 			auth: false,
-			validate: APIConfig.reset.validate,
-			response: APIConfig.reset.response,
+			validate: APIConfig.forgot.validate,
+			response: APIConfig.forgot.response,
 			pre: [
 				{
 					assign: 'user',
@@ -44,6 +44,52 @@ internals.applyRoutes = function (server, next) {
 		},
 		handler: function (request, reply) {
 			Login.forgotPassword(request, reply);
+		}
+	});
+
+	server.route({
+		method: 'POST',
+		path: '/auth/reset',
+		config: {
+			description: APIConfig.reset.description,
+			tags: ['auth', 'user'],
+			auth: false,
+			validate: APIConfig.reset.validate,
+			response: APIConfig.reset.response,
+			pre: [{
+				assign: 'user',
+				method: function (request, reply) {
+
+					server.plugins['utils-token'].read(request.payload.token, function (err, data) {
+						if (err) {
+							return reply(err);
+						}
+
+						if (!data || !data.userId) {
+							return reply(Boom.notFound('Token not found.'));
+						}
+
+						const conditions = {
+							_id: data.userId
+						};
+
+						User.findOne(conditions, (err, user) => {
+							if (err) {
+								return reply(err);
+							}
+
+							if (!user) {
+								return reply(Boom.badRequest('User not found.'));
+							}
+
+							reply(user);
+						});
+					})
+				}
+			}]
+		},
+		handler: function (request, reply) {
+			User.resetPassword(request, reply);
 		}
 	});
 
