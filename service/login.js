@@ -21,7 +21,7 @@ class Login {
 
 		let data = _.merge({}, user);
 		request.server.plugins['utils-token'].save({userId: user.id}, (err, token) => {
-			data.token = token
+			data.token = token;
 			request.server.plugins['utils-mail'].send({
 				template: 'forgot-password',
 				data: data,
