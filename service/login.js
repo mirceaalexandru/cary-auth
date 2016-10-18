@@ -1,6 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
+const Boom = require('boom');
 
 class Login {
 	constructor(server) {
