@@ -1,6 +1,6 @@
 {
   "name": "server-frame-auth",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Server auth plugin for Hapi",
   "main": "lib/index.js",
   "scripts": {
