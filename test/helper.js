@@ -3,27 +3,29 @@
 function init(done) {
 	// Our hapi server
 	const Hapi = require('hapi');
-	const Server = new Hapi.Server();
+	const Server = new Hapi.Server({
+		app: {}
+	});
 
 	Server.connection();
 
 	Server.register([
-			{
-				register: require('hapi-auth-cookie')
-			},
-			{
-				register: require('bell')
-			},
-			require('./db'),
-			require('./../index'),
-		],
+		{
+			register: require('hapi-auth-cookie')
+		},
+		{
+			register: require('bell')
+		},
+		require('./db'),
+		require('./../index'),
+	],
 
-		function (err) {
-			endIfErr(err);
+	function (err) {
+		endIfErr(err);
 
-			Server.start(endIfErr);
-			done(null, Server);
-		});
+		Server.start(endIfErr);
+		done(null, Server);
+	});
 
 	function endIfErr(err) {
 		if (err) {

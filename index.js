@@ -4,8 +4,9 @@ exports.register = function (server, options, next) {
 	const cache = server.cache({segment: 'sessions', expiresIn: 3 * 24 * 60 * 60 * 1000});
 	server.app.cache = cache;
 
+	let cookieSecret = server.settings.app.cookieSecret || 'password-should-be-32-characters';
 	server.auth.strategy('session', 'cookie', true, {
-		password: 'password-should-be-32-characters',
+		password: cookieSecret,
 		isSecure: false,
 		validateFunc: function (request, session, callback) {
 			cache.get(session.sid, (err, cached) => {

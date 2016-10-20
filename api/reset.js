@@ -1,16 +1,15 @@
 'use strict';
 
+const Boom = require('boom');
 const LoginService = require('./../service/login');
 const UserService = require('./../service/users');
-const Boom = require('boom');
-
 const APIConfig = require('./config/reset');
 
 const internals = {};
 
 internals.applyRoutes = function (server, next) {
-	var Login = new LoginService(server);
-	var User = new UserService(server);
+	let Login = new LoginService(server);
+	let User = new UserService(server);
 
 	server.route({
 		method: 'POST',
@@ -33,11 +32,11 @@ internals.applyRoutes = function (server, next) {
 							}
 
 							if (!user) {
-							return reply(Boom.notFound('Email not found.'))
-						}
+								return reply(Boom.notFound('Email not found.'))
+							}
 
-						reply(user);
-					});
+							reply(user);
+						});
 					}
 				}
 			]
@@ -60,7 +59,7 @@ internals.applyRoutes = function (server, next) {
 				assign: 'user',
 				method: function (request, reply) {
 
-					server.plugins['utils-token'].read(request.payload.token, function (err, data) {
+					server.plugins['utils-token'].read(request.payload.token, (err, data) => {
 						if (err) {
 							return reply(err);
 						}
@@ -96,12 +95,10 @@ internals.applyRoutes = function (server, next) {
 	next();
 };
 
-
 exports.register = function (server, options, next) {
 	server.dependency(['hapi-auth-cookie'], internals.applyRoutes);
 	next();
 };
-
 
 exports.register.attributes = {
 	name: 'login-reset'

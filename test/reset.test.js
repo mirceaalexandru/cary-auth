@@ -1,37 +1,37 @@
-'use strict'
+'use strict';
 
 var Code = require('code');
-var expect = Code.expect;
 
-const Lab = require('lab')
-const lab = exports.lab = Lab.script()
-const suite = lab.suite
-const test = lab.test
-const before = lab.before
+var expect = Code.expect;
+const Lab = require('lab');
+
+const lab = exports.lab = Lab.script();
+const suite = lab.suite;
+const test = lab.test;
+const before = lab.before;
 
 suite('User suite tests', () => {
-	let server
-	let cookie
-	let user = {username: 'user1', firstName: 'user1', lastName: 'user1', email: 'user1@example.com', password: '123123123aZ'}
+	let server;
+	let user = {username: 'user1', firstName: 'user1', lastName: 'user1', email: 'user1@example.com', password: '123123123aZ'};
 	let userPwd = '123123123aZ';
 
-	before({}, function (done) {
+	before({}, done => {
 		const Helper = require('./helper');
-		Helper.init(function (err, srv) {
+		Helper.init((err, srv) => {
 			expect(err).to.not.exist();
 
-			server = srv
-			done()
-		})
-	})
+			server = srv;
+			done();
+		});
+	});
 
-	test('signup complete', (done) => {
-		let url = '/signup'
+	test('signup complete', done => {
+		let url = '/signup';
 		server.inject({
 			url: url,
 			method: 'POST',
 			payload: user
-		}, function (res) {
+		}, res => {
 			expect(res.statusCode).to.be.equal(200);
 			var payload = JSON.parse(res.payload);
 			expect(payload.user).to.exist();
@@ -42,17 +42,17 @@ suite('User suite tests', () => {
 			expect(payload.user.password).to.not.exist();
 			expect(payload.user.salt).to.not.exist();
 
-			done()
-		})
-	})
+			done();
+		});
+	});
 
-	test('correct login', (done) => {
-		let url = '/login'
+	test('correct login', done => {
+		let url = '/login';
 		server.inject({
 			url: url,
 			method: 'POST',
 			payload: {password: userPwd, username: user.username}
-		}, function (res) {
+		}, res => {
 			expect(res.statusCode).to.be.equal(200);
 			var payload = JSON.parse(res.payload);
 			expect(payload.user).to.exist();
@@ -64,15 +64,14 @@ suite('User suite tests', () => {
 			expect(payload.user.salt).to.not.exist();
 
 			user = payload.user;
-			done()
-		})
-	})
-
+			done();
+		});
+	});
 
 	let token = null;
 	let info = null;
 	let newPassword = '321432543';
-	test('forgot password', (done) => {
+	test('forgot password', done => {
 		// first I need to load a mock email plugin
 		var pluginEmail = {
 			register: (server, options, next) => {
@@ -95,71 +94,71 @@ suite('User suite tests', () => {
 			name: 'utils-token'
 		};
 
-		server.register([pluginEmail, pluginToken], (err) => {
-				expect(err).to.not.exist();
+		server.register([pluginEmail, pluginToken], err => {
+			expect(err).to.not.exist();
+
+			server.inject({
+				url: '/auth/forgot',
+				method: 'POST',
+				payload: {email: user.email}
+			}, res => {
+				expect(res.statusCode).to.be.equal(200);
 
 				server.inject({
-					url: '/auth/forgot',
+					url: '/auth/reset',
 					method: 'POST',
-					payload: {"email": user.email}
-				}, (res) => {
+					payload: {token: token, password: newPassword}
+				}, res => {
 					expect(res.statusCode).to.be.equal(200);
 
-					server.inject({
-						url: '/auth/reset',
-						method: 'POST',
-						payload: {"token": token, password: newPassword}
-					}, (res) => {
-						expect(res.statusCode).to.be.equal(200);
-
-						done()
-					})
-				})
+					done();
+				});
+			});
 		});
 
-		function send(input, done){
+		function send(input, done) {
 			expect(input).to.exist();
 			expect(input.data._id).to.exist();
 			expect(input.data).to.contains(user);
 			token = input.data.token;
 			expect(token).to.exist();
-			done()
+			done();
 		}
 
-		function saveToken(infoData, done){
+		function saveToken(infoData, done) {
 			expect(infoData).to.exist();
 			expect(infoData.userId).to.exist();
 			info = infoData;
-			done(null, '123123123')
+			done(null, '123123123');
 		}
 
-		function readToken(tokenData, done){
+		function readToken(tokenData, done) {
 			expect(tokenData).to.exist();
 			expect(tokenData).to.be.equal(token);
 			done(null, info);
 		}
-	})
+	});
 
-	test('cannot login with old password', (done) => {
-		let url = '/login'
+	test('cannot login with old password', done => {
+		let url = '/login';
 		server.inject({
 			url: url,
 			method: 'POST',
 			payload: {password: userPwd, username: user.username}
-		}, (res) => {
-			expect(res.statusCode).to.be.equal(400	);
+		}, res => {
+			expect(res.statusCode).to.be.equal(400);
 
-			done()
-		})
-	})
+			done();
+		});
+	});
 
-	test('can login with new password', (done) => {
-		let url = '/login'
+	test('can login with new password', done => {
+		let url = '/login';
 		server.inject({
 			url: url,
 			method: 'POST',
 			payload: {password: newPassword, username: user.username}
-		}, (res) => {
+		}, res => {
 			expect(res.statusCode).to.be.equal(200);
 			var payload = JSON.parse(res.payload);
 			expect(payload.user).to.exist();
@@ -170,7 +169,7 @@ suite('User suite tests', () => {
 			expect(payload.user.password).to.not.exist();
 			expect(payload.user.salt).to.not.exist();
 
-			done()
-		})
-	})
+			done();
+		});
+	});
 })

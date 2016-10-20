@@ -24,10 +24,10 @@ exports.register = function (server, options, next) {
 			var collection = getCollection(coll);
 
 			for (var i in collection){
-				var found = true
+				var found = true;
 				for (var j in cond) {
 					if (cond[j] !== collection[i][j]) {
-						found = false
+						found = false;
 						break
 					}
 					if (found) {
@@ -35,11 +35,11 @@ exports.register = function (server, options, next) {
 					}
 				}
 			}
-			return done()
+			return done();
 		},
 
 		findByIdAndDelete: function (coll, cond, done) {
-			internals.findOne(coll, cond, function (err, doc) {
+			internals.findOne(coll, cond, (err, doc) => {
 				if (err) {
 					return done(err);
 				}
@@ -54,7 +54,7 @@ exports.register = function (server, options, next) {
 		},
 
 		update: function (coll, cond, setValues, done) {
-			internals.findOne(coll, cond, function (err, doc) {
+			internals.findOne(coll, cond, (err, doc) => {
 				if (err) {
 					return done(err);
 				}
@@ -71,7 +71,6 @@ exports.register = function (server, options, next) {
 	};
 
 	server.expose('instance', internals);
-
 	next();
 };
 

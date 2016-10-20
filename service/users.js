@@ -1,8 +1,8 @@
 'use strict';
 
 const Boom = require('boom');
-const UserModel = require('./../models/user');
 const Bcrypt = require('bcrypt');
+const UserModel = require('./../models/user');
 
 class User {
 
@@ -13,22 +13,22 @@ class User {
 	getUser(request, reply) {
 		this.getUserImpl(request.params.id, function (err, user) {
 			if (err) {
-				return reply(err)
+				return reply(err);
 			}
 
 			reply(user);
-		})
+		});
 	}
 
 	getCurrentUser(request, reply) {
 		var userId = request.auth.credentials.userId;
 		this.getUserImpl(userId, function (err, user) {
 			if (err) {
-				return reply(err)
+				return reply(err);
 			}
 
 			reply(user);
-		})
+		});
 	}
 
 	getUserImpl(userId, done) {
@@ -45,8 +45,8 @@ class User {
 					return done(Boom.notFound('Document not found.'));
 				}
 
-				delete user.password
-				delete user.salt
+				delete user.password;
+				delete user.salt;
 				done(null, {user: user});
 			});
 	}
@@ -58,8 +58,8 @@ class User {
 					return reply(err);
 				}
 
-				delete user.password
-				delete user.salt
+				delete user.password;
+				delete user.salt;
 				reply({user: user});
 			});
 		});
@@ -67,13 +67,20 @@ class User {
 
 	hashPwd(user, done) {
 		Bcrypt.genSalt(10, function (err, salt) {
+			if (err) {
+				return done(err);
+			}
 			user.salt = user.salt || salt;
 
 			Bcrypt.hash(user.password, user.salt, function (err, pwd) {
+				if (err) {
+					return done(err);
+				}
+
 				user.password = pwd;
 				done();
-			})
-		})
+			});
+		});
 	}
 
 	findOne(query, done) {
@@ -90,7 +97,7 @@ class User {
 			request.server.plugins.db.instance,
 			{_id: request.params.id},
 			request.payload,
-			(err, user) => {
+			err => {
 				if (err) {
 					return reply(err);
 				}
@@ -100,7 +107,7 @@ class User {
 	}
 
 	resetPassword(request, reply) {
-		this.do_changeUserPassword(request.pre.user, request.payload.password, reply);
+		this.doChangeUserPassword(request.pre.user, request.payload.password, reply);
 	}
 
 	changePassword(request, reply) {
@@ -120,11 +127,11 @@ class User {
 					return reply(Boom.notFound('Document not found.'));
 				}
 
-				this.do_changeUserPassword(user, password, reply);
+				this.doChangeUserPassword(user, password, reply);
 			});
 	}
 
-	do_changeUserPassword(user, password, reply) {
+	doChangeUserPassword(user, password, reply) {
 		let context = this;
 		let userId = user._id;
 		delete user._id;
@@ -135,7 +142,7 @@ class User {
 				context._server.plugins.db.instance,
 				{_id: userId},
 				user,
-				(err) => {
+				err => {
 					if (err) {
 						return reply(err);
 					}
@@ -162,15 +169,14 @@ class User {
 				var match = {
 					password: password,
 					salt: user.salt
-				}
+				};
 
 				context.hashPwd(match, function () {
 					if (match.password === user.password) {
 						delete user.password;
 						delete user.salt;
-						return done(err, user)
-					}
-					else {
+						return done(err, user);
+					} else {
 						return done();
 					}
 				})

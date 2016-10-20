@@ -5,7 +5,6 @@ const SessionService = require('./../service/session');
 
 const internals = {};
 
-
 internals.applyRoutes = function (server, next) {
 	var Session = new SessionService(server);
 
@@ -28,12 +27,13 @@ internals.applyRoutes = function (server, next) {
 			if (!session) {
 				return reply(Boom.notFound('Document not found.'));
 			}
+
 			Session.findByIdAndDelete(session, (err, sessionDoc) => {
 				if (err) {
 					return reply(err);
 				}
 
-				request.server.app.cache.drop(session, function (err, data) {
+				request.server.app.cache.drop(session, () => {
 					if (!sessionDoc) {
 						return reply(Boom.notFound('Document not found.'));
 					}
@@ -51,11 +51,9 @@ internals.applyRoutes = function (server, next) {
 
 
 exports.register = function (server, options, next) {
-
 	server.dependency(['hapi-auth-cookie'], internals.applyRoutes);
 	next();
 };
-
 
 exports.register.attributes = {
 	name: 'logout'

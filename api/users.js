@@ -7,7 +7,6 @@ const APIConfig = require('./config/users');
 const internals = {};
 
 internals.applyRoutes = function (server, next) {
-
 	var User = new UserService(server);
 
 	// get current logged in user
@@ -51,12 +50,10 @@ internals.applyRoutes = function (server, next) {
 				{
 					assign: 'usernameCheck',
 					method: function (request, reply) {
-
 						const conditions = {
 							username: request.payload.username,
 							_id: {$ne: request.params.id}
 						};
-
 						User.findOne(conditions, (err, user) => {
 
 							if (err) {
@@ -74,7 +71,6 @@ internals.applyRoutes = function (server, next) {
 				{
 					assign: 'emailCheck',
 					method: function (request, reply) {
-
 						const conditions = {
 							email: request.payload.email,
 							_id: {$ne: request.params.id}
@@ -112,13 +108,7 @@ internals.applyRoutes = function (server, next) {
 				{
 					assign: 'password',
 					method: function (request, reply) {
-						//User.generatePasswordHash(request.payload.password, (err, hash) => {
-						//	if (err) {
-						//		return reply(err);
-						//	}
-
-							reply(/*hash*/request.payload.password);
-						//});
+						reply(request.payload.password);
 					}
 				}
 			]
@@ -131,13 +121,10 @@ internals.applyRoutes = function (server, next) {
 	next();
 };
 
-
 exports.register = function (server, options, next) {
 	server.dependency(['hapi-auth-cookie'], internals.applyRoutes);
-
 	next();
 };
-
 
 exports.register.attributes = {
 	name: 'users'
