@@ -6,14 +6,12 @@ const LoginService = require('./../service/login');
 const UserService = require('./../service/users');
 const SessionService = require('./../service/session');
 const APIConfig = require('./config/login');
-
 const internals = {};
 
 internals.applyRoutes = function (server, next) {
-
-	var Login = new LoginService(server);
-	var User = new UserService(server);
-	var Session = new SessionService(server);
+	let Login = new LoginService(server);
+	let User = new UserService(server);
+	let Session = new SessionService(server);
 
 	server.route({
 		method: 'POST',
@@ -66,18 +64,18 @@ internals.applyRoutes = function (server, next) {
 				}
 			]
 		},
-		handler: Login.login
+		handler: function (request, reply) {
+			Login.login(request, reply);
+		}
 	});
 
 	next();
 };
 
-
 exports.register = function (server, options, next) {
 	server.dependency(['hapi-auth-cookie'], internals.applyRoutes);
 	next();
 };
-
 
 exports.register.attributes = {
 	name: 'login'

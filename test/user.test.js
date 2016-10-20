@@ -9,6 +9,10 @@ const suite = lab.suite;
 const test = lab.test;
 const before = lab.before;
 
+/* eslint-disable no-useless-escape */
+/* eslint-disable object-curly-spacing */
+/* eslint-disable no-control-regex */
+
 suite('User suite tests', () => {
 	let server;
 	let cookie;

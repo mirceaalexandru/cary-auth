@@ -2,7 +2,7 @@
 
 const Joi = require('joi');
 
-var descriptionCurrentUser =
+let descriptionCurrentUser =
 	'Get current logged in user information.' +
 	'<br>' +
 	'<br> ' +
@@ -10,7 +10,7 @@ var descriptionCurrentUser =
 	'<i>curl -i -b "sid=Fe26.2**922304f9f..." http://localhost:9090/users/my</i>' +
 	'<br>';
 
-var responseCurrentUser = {
+let responseCurrentUser = {
 	failAction: 'log',
 	status: {
 		200: Joi.object({
@@ -28,9 +28,9 @@ var responseCurrentUser = {
 			message: Joi.string().required()
 		})
 	}
-}
+};
 
-var descriptionGetUser =
+let descriptionGetUser =
 	'Get user information.' +
 	'<br>' +
 	'<br> ' +
@@ -38,7 +38,7 @@ var descriptionGetUser =
 	'<i>curl -i -b "sid=Fe26.2**922304f9f..." http://localhost:9090/users/57f55bb0930f6c0366598389</i>' +
 	'<br>';
 
-var responseGetUser = {
+let responseGetUser = {
 	failAction: 'log',
 	status: {
 		200: Joi.object({
@@ -61,9 +61,9 @@ var responseGetUser = {
 			message: Joi.string().required()
 		})
 	}
-}
+};
 
-var descriptionUpdateUser =
+let descriptionUpdateUser =
 	'Update user information.' +
 	'<br>' +
 	'<br> ' +
@@ -71,7 +71,7 @@ var descriptionUpdateUser =
 	'<i>curl -i -H "Content-Type: application/json" -d \'{"username":"admin_", "isActive": true, "_id": "57f55bb0930f6c0366598380", "email": "wer@wer.wer", "firstName": "123", "lastName": "asd"}\'  -b "sid=Fe26.2**922304f9f..." http://localhost:9090/users/57f55bb0930f6c0366598389</i>' +
 	'<br>';
 
-var validateUpdateUser = {
+let validateUpdateUser = {
 	params: {
 		id: Joi.string().required()
 	},
@@ -85,7 +85,7 @@ var validateUpdateUser = {
 	}
 };
 
-var responseUpdateUser = {
+let responseUpdateUser = {
 	failAction: 'log',
 	status: {
 		200: Joi.object({
@@ -114,9 +114,9 @@ var responseUpdateUser = {
 			message: Joi.string().required()
 		})
 	}
-}
+};
 
-var descriptionChangePassword =
+let descriptionChangePassword =
 	'Change user password.' +
 	'<br>' +
 	'<br> ' +
@@ -124,7 +124,7 @@ var descriptionChangePassword =
 	'<i>curl -i -H -X PUT "Content-Type: application/json" -d \'{"password":"xxx"}\'  -b "sid=Fe26.2**922304f9f..." http://localhost:9090/users/57f55bb0930f6c0366598389/password</i>' +
 	'<br>';
 
-var validateChangePassword = {
+let validateChangePassword = {
 	params: {
 		id: Joi.string().required()
 	},
@@ -133,7 +133,7 @@ var validateChangePassword = {
 	}
 };
 
-var responseChangePassword = {
+let responseChangePassword = {
 	failAction: 'log',
 	status: {
 		200: Joi.object(),
@@ -153,7 +153,7 @@ var responseChangePassword = {
 			message: Joi.string().required()
 		})
 	}
-}
+};
 
 module.exports.getCurrentUser = {
 	description: descriptionCurrentUser,

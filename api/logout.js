@@ -40,15 +40,12 @@ internals.applyRoutes = function (server, next) {
 
 					reply({message: 'Success.'});
 				})
-			})
-			;
+			});
 		}
 	});
 
-
 	next();
 };
-
 
 exports.register = function (server, options, next) {
 	server.dependency(['hapi-auth-cookie'], internals.applyRoutes);

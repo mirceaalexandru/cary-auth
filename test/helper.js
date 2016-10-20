@@ -30,9 +30,9 @@ function init(done) {
 	function endIfErr(err) {
 		if (err) {
 			console.error(err);
-			process.exit(1);
+			throw new Error(err);
 		}
-	};
+	}
 }
 
 module.exports.init = init;

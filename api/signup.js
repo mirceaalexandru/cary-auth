@@ -8,7 +8,7 @@ const internals = {};
 
 internals.applyRoutes = function (server, next) {
 
-	var User = new UserService(server);
+	let User = new UserService(server);
 
 	// signup user
 	server.route({
@@ -71,13 +71,10 @@ internals.applyRoutes = function (server, next) {
 	next();
 };
 
-
 exports.register = function (server, options, next) {
 	server.dependency(['hapi-auth-cookie'], internals.applyRoutes);
-
 	next();
 };
-
 
 exports.register.attributes = {
 	name: 'signup'

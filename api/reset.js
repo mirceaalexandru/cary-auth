@@ -32,7 +32,7 @@ internals.applyRoutes = function (server, next) {
 							}
 
 							if (!user) {
-								return reply(Boom.notFound('Email not found.'))
+								return reply(Boom.notFound('Email not found.'));
 							}
 
 							reply(user);
