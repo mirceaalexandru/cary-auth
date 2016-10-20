@@ -21,39 +21,6 @@ function init(done) {
 		function (err) {
 			endIfErr(err);
 
-			const cache = Server.cache({segment: 'sessions', expiresIn: 3 * 24 * 60 * 60 * 1000});
-			Server.app.cache = cache;
-
-			Server.auth.strategy('session', 'cookie', true, {
-				password: 'password-should-be-32-characters',
-				isSecure: false,
-				validateFunc: function (request, session, callback) {
-					cache.get(session.sid, (err, cached) => {
-						if (err) {
-							return callback(err, false);
-						}
-
-						if (cached) {
-							return callback(null, true, cached.account);
-						}
-
-						var Session = Server.plugins.session.instance;
-						Session.get(session.sid, (err, data) => {
-							if (err) {
-								return callback(err, false);
-							}
-
-							if (data) {
-								cache.set(session.sid, {account: data})
-								return callback(null, true, data);
-							}
-
-							return callback(null, false);
-						})
-					});
-				}
-			});
-
 			Server.start(endIfErr);
 			done(null, Server);
 		});

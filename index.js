@@ -1,6 +1,39 @@
 'use strict';
 
 exports.register = function (server, options, next) {
+	const cache = server.cache({segment: 'sessions', expiresIn: 3 * 24 * 60 * 60 * 1000});
+	server.app.cache = cache;
+
+	server.auth.strategy('session', 'cookie', true, {
+		password: 'password-should-be-32-characters',
+		isSecure: false,
+		validateFunc: function (request, session, callback) {
+			cache.get(session.sid, (err, cached) => {
+				if (err) {
+					return callback(err, false);
+				}
+
+				if (cached) {
+					return callback(null, true, cached.account);
+				}
+
+				var Session = server.plugins.session.instance;
+				Session.get(session.sid, (err, data) => {
+					if (err) {
+						return callback(err, false);
+					}
+
+					if (data) {
+						cache.set(session.sid, {account: data})
+						return callback(null, true, data);
+					}
+
+					return callback(null, false);
+				})
+			});
+		}
+	});
+
 	server.register([
 		{
 			register: require('./lib/session')
