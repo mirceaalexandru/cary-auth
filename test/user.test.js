@@ -123,6 +123,18 @@ suite('User suite tests', () => {
 		});
 	});
 
+	test('get user without login information', done => {
+		let url = '/users/' + user._id;
+		server.inject({
+			url: url,
+			method: 'GET'
+		}, res => {
+			expect(res.statusCode).to.be.equal(401);
+
+			done();
+		});
+	});
+
 	test('get current logged in user', done => {
 		let url = '/users/my';
 		server.inject({
@@ -165,6 +177,19 @@ suite('User suite tests', () => {
 			payload: {password: 'xxxxxxxx'}
 		}, res => {
 			expect(res.statusCode).to.be.equal(200);
+
+			done();
+		});
+	});
+
+	test('change password without login information', done => {
+		let url = '/users/' + user._id + '/password';
+		server.inject({
+			url: url,
+			method: 'PUT',
+			payload: {password: 'xxxxxxxx'}
+		}, res => {
+			expect(res.statusCode).to.be.equal(401);
 
 			done();
 		});
@@ -215,6 +240,18 @@ suite('User suite tests', () => {
 			headers: { cookie: 'sid=' + cookie }
 		}, res => {
 			expect(res.statusCode).to.be.equal(200);
+
+			done();
+		});
+	});
+
+	test('logout without login information', done => {
+		let url = '/logout';
+		server.inject({
+			url: url,
+			method: 'POST'
+		}, res => {
+			expect(res.statusCode).to.be.equal(401);
 
 			done();
 		});
