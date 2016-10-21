@@ -7,7 +7,7 @@ function init(done) {
 		app: {}
 	});
 
-	Server.connection();
+	Server.connection({labels: 'default'});
 
 	Server.register([
 		{

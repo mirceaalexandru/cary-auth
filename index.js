@@ -5,7 +5,8 @@ exports.register = function (server, options, next) {
 	server.app.cache = cache;
 
 	let cookieSecret = server.settings.app.cookieSecret || 'password-should-be-32-characters';
-	server.auth.strategy('session', 'cookie', true, {
+	const defaultServerConnection = server.select('default');
+	defaultServerConnection.auth.strategy('session', 'cookie', true, {
 		password: cookieSecret,
 		isSecure: false,
 		validateFunc: function (request, session, callback) {

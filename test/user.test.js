@@ -144,6 +144,18 @@ suite('User suite tests', () => {
 		});
 	});
 
+	test('get current logged in user when cookie is missing', done => {
+		let url = '/users/my';
+		server.inject({
+			url: url,
+			method: 'GET'
+		}, res => {
+			expect(res.statusCode).to.be.equal(401);
+
+			done();
+		});
+	});
+
 	test('change password', done => {
 		let url = '/users/' + user._id + '/password';
 		server.inject({

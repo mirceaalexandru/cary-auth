@@ -8,17 +8,14 @@ const internals = {};
 internals.applyRoutes = function (server, next) {
 	var Session = new SessionService(server);
 
-	server.route({
+	const defaultServerConnection = server.select('default');
+	defaultServerConnection.route({
 		method: 'POST',
 		path: '/logout',
 		config: {
 			description: APIConfig.logout.description,
 			tags: ['auth', 'doc'],
-			response: APIConfig.logout.response,
-			auth: {
-				mode: 'try',
-				strategy: 'session'
-			}
+			response: APIConfig.logout.response
 		},
 		handler: function (request, reply) {
 			const credentials = request.auth.credentials || {_id: ""};
