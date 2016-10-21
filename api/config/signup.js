@@ -14,8 +14,8 @@ var validate = {
 		username: Joi.string().token().lowercase().required(),
 		password: Joi.string().min(8).required(),
 		email: Joi.string().email().lowercase().required(),
-		firstName: Joi.string().min(1).required(),
-		lastName: Joi.string().min(1).required()
+		firstName: Joi.string().min(1),
+		lastName: Joi.string().min(1)
 	}
 };
 
@@ -27,8 +27,8 @@ var response = {
 				_id: Joi.string().required(),
 				username: Joi.string().required(),
 				email: Joi.string().required(),
-				firstName: Joi.string().required(),
-				lastName: Joi.string().required()
+				firstName: Joi.string(),
+				lastName: Joi.string()
 			})
 		}),
 		409: Joi.object({

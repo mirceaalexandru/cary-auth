@@ -18,8 +18,8 @@ let responseCurrentUser = {
 				_id: Joi.string().required(),
 				username: Joi.string().required(),
 				email: Joi.string().required(),
-				firstName: Joi.string().required(),
-				lastName: Joi.string().required()
+				firstName: Joi.string(),
+				lastName: Joi.string()
 			})
 		}),
 		401: Joi.object({
@@ -46,8 +46,8 @@ let responseGetUser = {
 				_id: Joi.string().required(),
 				username: Joi.string().required(),
 				email: Joi.string().required(),
-				firstName: Joi.string().required(),
-				lastName: Joi.string().required()
+				firstName: Joi.string(),
+				lastName: Joi.string()
 			})
 		}),
 		401: Joi.object({
@@ -80,8 +80,8 @@ let validateUpdateUser = {
 		isActive: Joi.boolean().required(),
 		username: Joi.string().required(),
 		email: Joi.string().required(),
-		firstName: Joi.string().required(),
-		lastName: Joi.string().required()
+		firstName: Joi.string(),
+		lastName: Joi.string()
 	}
 };
 
@@ -94,8 +94,8 @@ let responseUpdateUser = {
 				isActive: Joi.boolean().required(),
 				username: Joi.string().required(),
 				email: Joi.string().required(),
-				firstName: Joi.string().required(),
-				lastName: Joi.string().required()
+				firstName: Joi.string(),
+				lastName: Joi.string()
 			})
 		}),
 		401: Joi.object({
